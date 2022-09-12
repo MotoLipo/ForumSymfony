@@ -14,8 +14,8 @@
 
 # Пример работы форума
 
-![Картинка 1](https://github.com/MotoLipo/ForumSymfony/raw/master/public/image_readme/image1.jpg)
+![Картинка 1](https://github.com/MotoLipo/ForumSymfony/raw/main/public/image_readme/image1.jpg)
 
-![Картинка 2](https://github.com/MotoLipo/ForumSymfony/raw/master/public/image_readme/image2.jpg)
+![Картинка 2](https://github.com/MotoLipo/ForumSymfony/raw/main/public/image_readme/image2.jpg)
 
-![Картинка 3](https://github.com/MotoLipo/ForumSymfony/raw/master/public/image_readme/image3.jpg)
+![Картинка 3](https://github.com/MotoLipo/ForumSymfony/raw/main/public/image_readme/image3.jpg)
