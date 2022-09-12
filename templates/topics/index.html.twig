@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello MainController!{% endblock %}
+
+{% block body %}
+    <style>
+        .example-wrapper {
+            margin: 1em auto;
+            max-width: 800px;
+            width: 95%;
+            font: 18px/1.5 sans-serif;
+        }
+
+        .example-wrapper code {
+            background: #F5F5F5;
+            padding: 2px 6px;
+        }
+    </style>
+
+    <div class="example-wrapper">
+        {% for comment in comments %}
+            <div class="col-sm-10 mb-4">
+                <div class="card p-3">
+                    <figure class="p-3 mb-0">
+                        <blockquote class="blockquote">
+                            <p>{{ comment.text }}</p>
+                        </blockquote>
+                        <figcaption class="blockquote-footer mb-0 text-muted">
+                            {{ comment.author }} <cite
+                                    title="Source Title">{{ comment.createDate|date('d.m.Y') }}</cite>
+                        </figcaption>
+                    </figure>
+                </div>
+            </div>
+        {% endfor %}
+        {% if previous >= 0 %}
+            <a class="btn btn-primary" href="{{ path('topics', { slug: topics.slug, offset: previous }) }}">Назад</a>
+        {% endif %}
+        {% if next < comments|length %}
+            <a class="btn btn-primary" href="{{ path('topics', { slug: topics.slug, offset: next }) }}">Вперёд</a>
+        {% endif %}
+
+        <div style="max-width: 500px;" class="mt-5">
+            {% if is_granted('ROLE_USER') %}
+                <h1>Добавить комментарий</h1>
+                {{ form(comment_form) }}
+            {% else %}
+                <h2>Зарегистрируйтесь или войдите, чтобы добавить комментарий.</h2>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

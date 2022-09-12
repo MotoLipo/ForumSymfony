@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Авторизация{% endblock %}
+
+{% block body %}
+    {% if error %}
+        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+
+    <div class="container-fluid" style="max-width: 500px;height: 100%;">
+        <h1>Авторизация</h1>
+        <form action="{{ path('app_login') }}" method="post">
+            <div class="form-floating my-2">
+                <input class="form-control" type="text" id="username" required="required" name="_username"
+                       placeholder="Name"
+                       value="{{ last_username }}"/>
+                <label class="form-label required" for="username">Электронная почта</label>
+
+            </div>
+            <div class="form-floating my-2">
+                <input class="form-control" type="password" id="password" required="required" placeholder="Name"
+                       name="_password"/>
+                <label class="form-label required" for="password">Пароль</label>
+            </div>
+
+            <button class="btn-primary btn" type="submit">Войти</button>
+        </form>
+    </div>
+
+{% endblock %}
