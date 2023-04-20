@@ -24,6 +24,22 @@ class RegistrationFormType extends AbstractType
                 'attr' => [
                     'placeholder' => 'Name'
                 ]])
+            ->add('login', null, [
+                'label' => 'Логин',
+                'row_attr' => [
+                    'class' => 'form-floating my-2',
+                ],
+                'attr' => [
+                    'placeholder' => 'Name'
+                ]])
+            ->add('FIO', null, [
+                'label' => 'ФИО',
+                'row_attr' => [
+                    'class' => 'form-floating my-2',
+                ],
+                'attr' => [
+                    'placeholder' => 'Name'
+                ]])
             ->add('plainPassword', PasswordType::class, [
                 'mapped' => false,
                 'attr' => [

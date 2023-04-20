@@ -21,10 +21,14 @@
                     <li><a href="{{ path('homepage') }}" class="nav-link px-2 link-secondary">Главная</a></li>
                 </ul>
 
-
                 <div class="col-md-3 text-end">
-                    <a href="{{ path('app_login') }}" type="button" class="btn btn-outline-primary me-2">Войти</a>
-                    <a href="{{ path('app_register') }}" type="button" class="btn btn-primary">Зарегистрироваться</a>
+                    {% if app.user  %}
+                        <a href="" type="button" class="btn me-2" style="pointer-events: none;">{{ app.user.login }}</a>
+                        <a href="/logout" type="button" class="btn btn-primary">Выйти</a>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" type="button" class="btn btn-outline-primary me-2">Войти</a>
+                        <a href="{{ path('app_register') }}" type="button" class="btn btn-primary">Зарегистрироваться</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
