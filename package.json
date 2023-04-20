@@ -7,7 +7,6 @@
         "bootstrap": "^5.2.1",
         "core-js": "^3.23.0",
         "jquery": "^3.6.1",
-        "node-sass": "^7.0.3",
         "regenerator-runtime": "^0.13.9",
         "sass-loader": "^13.0.2",
         "webpack-notifier": "^1.15.0"
@@ -19,5 +18,8 @@
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production --progress"
+    },
+    "dependencies": {
+        "sass": "^1.60.0"
     }
 }
