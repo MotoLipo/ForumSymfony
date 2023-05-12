@@ -31,6 +31,11 @@ class Comment
     #[ORM\JoinColumn(nullable: false)]
     private ?Topics $topics = null;
 
+    public function __toString(): string
+    {
+        return $this->author;
+    }
+
     #[ORM\PrePersist]
     public function setCreatedDate()
     {
