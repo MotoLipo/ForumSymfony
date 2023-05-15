@@ -31,6 +31,9 @@ class Comment
     #[ORM\JoinColumn(nullable: false)]
     private ?Topics $topics = null;
 
+    #[ORM\Column(length: 255, options: ['default' => 'submitted'])]
+    private ?string $state = 'submitted';
+
     public function __toString(): string
     {
         return $this->author;
@@ -91,6 +94,18 @@ class Comment
     public function setTopics(?Topics $topics): self
     {
         $this->topics = $topics;
+
+        return $this;
+    }
+
+    public function getState(): ?string
+    {
+        return $this->state;
+    }
+
+    public function setState(?string $state): self
+    {
+        $this->state = $state;
 
         return $this;
     }

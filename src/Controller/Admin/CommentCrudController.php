@@ -42,6 +42,7 @@ class CommentCrudController extends AbstractCrudController
         yield TextField::new('author');
         yield TextareaField::new('text')
             ->hideOnIndex();
+        yield TextField::new('state');
 
         $createDate = DateTimeField::new('createDate')->setFormTypeOptions([
             'years' => range(date('Y'), date('Y') + 5),
