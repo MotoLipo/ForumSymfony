@@ -6,12 +6,14 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Entity\Topics;
 use App\Form\CommentFormType;
+use App\Message\CommentMessage;
 use App\Repository\CommentRepository;
 use App\Repository\TopicsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MainController extends AbstractController
@@ -25,7 +27,7 @@ class MainController extends AbstractController
     }
 
     #[Route('/topics/{slug}',name: 'topics')]
-    public function topics(Request $request,CommentRepository $commentRepository, Topics $topics, EntityManagerInterface $entityManager): Response
+    public function topics(Request $request,CommentRepository $commentRepository, Topics $topics, EntityManagerInterface $entityManager, MessageBusInterface $bus): Response
     {
         $comment = new Comment();
         $form = $this->createForm(CommentFormType::class, $comment);
@@ -35,6 +37,8 @@ class MainController extends AbstractController
 
             $entityManager->persist($comment);
             $entityManager->flush();
+
+            $bus->dispatch(new CommentMessage($comment->getId(),$comment->getText()));
 
             return $this->redirectToRoute('topics', ['slug' => $topics->getSlug()]);
         }
