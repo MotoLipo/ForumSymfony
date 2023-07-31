@@ -2,14 +2,10 @@
 
 namespace App\Controller;
 
-
-use App\Entity\Comment;
 use App\Entity\Topics;
 use App\Form\CommentFormType;
 use App\Repository\TopicsRepository;
-use App\Service\ProcessesComment;
-use App\Service\FormComment;
-use App\Service\PaginationComment;
+use App\Service\CommentService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,23 +22,22 @@ class MainController extends AbstractController
     }
 
     #[Route('/topics/{slug}',name: 'topics')]
-    public function topics(Request $request, Topics $topics, ProcessesComment $processesComment, PaginationComment $paginationComment, FormComment $formComment): Response
+    public function topics(Request $request, Topics $topics, CommentService $commentService): Response
     {
-        $comment = new Comment();
-        $formComment->createForm($this->createForm(CommentFormType::class, $comment), $request);
-        if ($formComment->checkForm()) {
-            $processesComment->processes($comment, $topics);
+        $commentService->form(
+            $this->createForm(CommentFormType::class, $commentService->getComment()),
+            $request
+        );
+        if ($commentService->dataForm($topics)) {
             return $this->redirectToRoute('topics', ['slug' => $topics->getSlug()]);
         }
-        $paginationComment->create($request, $topics);
-        $paginator = $paginationComment->getPagination();
-
+        $paginator = $commentService->getPagination();
         return $this->render('topics/index.html.twig', [
             'topics' => $topics,
             'comments' => $paginator['comments'],
             'previous' => $paginator['previous'],
             'next' => $paginator['next'],
-            'comment_form' => $formComment->getFormView()
+            'comment_form' => $commentService->getForm()
         ]);
     }
 }
