@@ -6,14 +6,13 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Entity\Topics;
 use App\Form\CommentFormType;
-use App\Message\CommentMessage;
-use App\Repository\CommentRepository;
 use App\Repository\TopicsRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\ProcessesComment;
+use App\Service\FormComment;
+use App\Service\PaginationComment;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MainController extends AbstractController
@@ -27,31 +26,23 @@ class MainController extends AbstractController
     }
 
     #[Route('/topics/{slug}',name: 'topics')]
-    public function topics(Request $request,CommentRepository $commentRepository, Topics $topics, EntityManagerInterface $entityManager, MessageBusInterface $bus): Response
+    public function topics(Request $request, Topics $topics, ProcessesComment $processesComment, PaginationComment $paginationComment, FormComment $formComment): Response
     {
         $comment = new Comment();
-        $form = $this->createForm(CommentFormType::class, $comment);
-        $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()) {
-            $comment->setTopics($topics);
-
-            $entityManager->persist($comment);
-            $entityManager->flush();
-
-            $bus->dispatch(new CommentMessage($comment->getId(),$comment->getText()));
-
+        $formComment->createForm($this->createForm(CommentFormType::class, $comment), $request);
+        if ($formComment->checkForm()) {
+            $processesComment->processes($comment, $topics);
             return $this->redirectToRoute('topics', ['slug' => $topics->getSlug()]);
         }
-
-        $offset = max(0, $request->query->getInt('offset',0));
-        $paginator = $commentRepository->getCommentPaginator($topics,$offset);
+        $paginationComment->create($request, $topics);
+        $paginator = $paginationComment->getPagination();
 
         return $this->render('topics/index.html.twig', [
             'topics' => $topics,
-            'comments' => $paginator,
-            'previous' => $offset - CommentRepository::PAGINATOR_PER_PAGE,
-            'next' => min(count($paginator), $offset + CommentRepository::PAGINATOR_PER_PAGE),
-            'comment_form' => $form->createView()
+            'comments' => $paginator['comments'],
+            'previous' => $paginator['previous'],
+            'next' => $paginator['next'],
+            'comment_form' => $formComment->getFormView()
         ]);
     }
 }
