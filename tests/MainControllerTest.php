@@ -11,6 +11,6 @@ class MainControllerTest extends WebTestCase
         $client = static::createClient();
         $client->request('GET', '/');
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('a', 'Главная');
+        $this->assertSelectorTextContains('h3', 'test1');
     }
 }
