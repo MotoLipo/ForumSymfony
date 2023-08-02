@@ -28,7 +28,7 @@ class MainController extends AbstractController
             $this->createForm(CommentFormType::class, $commentService->getComment()),
             $request
         );
-        if ($commentService->dataForm($topics)) {
+        if ($commentService->dataForm($topics, $request)) {
             return $this->redirectToRoute('topics', ['slug' => $topics->getSlug()]);
         }
         $paginator = $commentService->getPagination();

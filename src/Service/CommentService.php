@@ -6,51 +6,43 @@ use App\Entity\Comment;
 use App\Entity\Topics;
 use App\Message\CommentMessage;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class CommentService
+class CommentService extends AbstractService
 {
     private Comment $comment;
-    private Request $request;
 
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private MessageBusInterface    $bus,
-        private FormComment $formComment,
-        private PaginationComment $paginationComment
+        EntityManagerInterface             $entityManager,
+        MessageBusInterface                $bus,
+        FormService                        $formService,
+        private readonly PaginationComment $paginationComment
     )
     {
         $this->comment = new Comment();
+        parent::__construct($entityManager, $bus, $formService);
     }
 
-    public function form(FormInterface $form, Request $request): void
+    public function dataForm(Topics $topics = new Topics(), Request $request = new Request()): bool
     {
-        $this->formComment->createForm($form, $request);
-        $this->request = $request;
-    }
-
-    public function dataForm(Topics $topics): bool
-    {
-        if ($this->formComment->checkForm()) {
+        if ($this->formService->checkForm()) {
             $this->saveComment($topics);
             $this->addBrokerMessage();
             return true;
         }
-        $this->paginationComment->create($this->request, $topics);
+        $this->paginationComment->create($request, $topics);
         return false;
     }
 
-    private function saveComment(Topics $topics): void
+    protected function saveComment(Topics $topics = new Topics()): void
     {
         $this->comment->setTopics($topics);
         $this->entityManager->persist($this->comment);
         $this->entityManager->flush();
     }
 
-    private function addBrokerMessage(): void
+    protected function addBrokerMessage(): void
     {
         $this->bus->dispatch(new CommentMessage($this->comment->getId(), $this->comment->getText()));
     }
@@ -61,11 +53,6 @@ class CommentService
     public function getComment(): Comment
     {
         return $this->comment;
-    }
-
-    public function getForm(): FormView
-    {
-        return $this->formComment->getFormView();
     }
 
     public function getPagination(): array

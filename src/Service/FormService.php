@@ -6,7 +6,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
 
-class FormComment
+class FormService
 {
     private FormInterface $form;
 
@@ -28,4 +28,13 @@ class FormComment
     {
         return $this->form->createView();
     }
+
+    /**
+     * @return FormInterface
+     */
+    public function getForm(): FormInterface
+    {
+        return $this->form;
+    }
+
 }
