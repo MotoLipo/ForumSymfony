@@ -21,6 +21,12 @@ class AppFixtures extends Fixture
         $topics->setText('text2');
         $topics->setSlug('slug2');
         $manager->persist($topics);
+
+        $topics = new Topics();
+        $topics->setName('test3');
+        $topics->setText('text3');
+        $topics->setSlug('slug3');
+        $manager->persist($topics);
         $manager->flush();
     }
 }
